@@ -2,9 +2,10 @@ recipe_version: "2"
 model: deepseek-ai/DeepSeek-V4-Flash-0731
 model_revision: 7872f01b1d1fe23eabc4c98b48bffcef5a386062
 runtime: vllm-distributed
-container: localhost:5500/sparksq/coldsnap-vllm-runtime@sha256:d52cf88fb5150e9e11f9db3d57f678466ea5875455f499f6587caeea75f79e0b
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-b12x@sha256:c05e1d20aad3282e7f525a7c4e1b136daab4f87367ffe448ea5a7ecc134b0637
 min_nodes: 2
 max_nodes: 2
+builder: coldsnap
 
 metadata:
   description: >-
