@@ -74,5 +74,4 @@ coldsnap:
     recovery:
       loader_backend: torch
   capsule:
-    repository: localhost:5500/sparksq/coldsnap-qwen38-27b-fp8-tp2-capsules
-    publish: true
+    repository: docker.io/scitrera/coldsnap-qwen38-27b-fp8-tp2-capsules

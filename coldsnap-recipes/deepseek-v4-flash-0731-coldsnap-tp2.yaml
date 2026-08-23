@@ -77,5 +77,4 @@ command: |
 
 coldsnap:
   capsule:
-    repository: localhost:5500/sparksq/coldsnap-ds4f-0731-tp2-capsules
-    publish: true
+    repository: docker.io/scitrera/coldsnap-ds4f-0731-tp2-capsules

@@ -27,17 +27,21 @@ cluster=g610
 sparkrun recipe validate "$recipe"
 sparkrun coldsnap capture "$recipe" --cluster "$cluster" --render-only
 sparkrun coldsnap capture "$recipe" --cluster "$cluster"
+sparkrun coldsnap publish "$recipe" --cluster "$cluster"
 sparkrun run "$recipe" --cluster "$cluster"
 ```
 
-After capture, `sparkrun run` selects ColdSnap restore automatically. Use
-`sparkrun coldsnap restore` when an explicit restore command or override is
-needed.
+Capture always creates and activates local capsules first. After validating
+that capture, `publish` pushes the capsules to their configured
+`docker.io/scitrera/...` repositories and activates the portable,
+digest-pinned descriptor. `sparkrun run` selects ColdSnap restore
+automatically; use `sparkrun coldsnap restore` for explicit overrides.
 
 ## Publishing
 
-The checked-in OCI references target the `localhost:5500` g610 qualification
-registry, so the catalog remains hidden from default registry listings. Before
-publishing it, mirror those images and capsule repositories to an accessible
-namespace, preserve immutable image digests, and remove `visible: false` from
-the registry manifest.
+Capsule publication targets Docker Hub under `docker.io/scitrera`. The pinned
+ColdSnap runtime images still target the `localhost:5500` g610 qualification
+registry, so the catalog remains hidden from default listings. Mirror those
+runtime images to an accessible namespace, preserve their immutable digests,
+and remove `visible: false` from the registry manifest before publishing the
+catalog itself.
