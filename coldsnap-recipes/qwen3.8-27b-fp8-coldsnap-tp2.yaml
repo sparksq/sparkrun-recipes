@@ -1,0 +1,78 @@
+recipe_version: "2"
+model: Qwen/Qwen3.8-27B-FP8
+model_revision: 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a
+runtime: vllm-distributed
+container: localhost:5500/sparksq/coldsnap-vllm-runtime@sha256:7aaa8e69f26871eadd8308dda543f1145a5e660e11bafdf1c745782ca56e38bf
+min_nodes: 2
+max_nodes: 2
+
+metadata:
+  description: >-
+    Qwen3.8-27B-FP8 TP2 with ColdSnap recovery-aware safetensors hydration,
+    semantic KV discard, eager execution, and portable per-rank OCI process
+    capsules. Qualified on the g610 two-node DGX Spark cluster without a
+    native ColdSnap weight blob.
+  model_dtype: fp8
+  kv_dtype: fp8
+  quantization: fp8
+  coldsnap_qualification: g610-qwen38-27b-fp8-tp2-20260822
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 2
+  pipeline_parallel: 1
+  gpu_memory_utilization: 0.2
+  kv_cache_dtype: fp8
+  max_model_len: 32768
+  max_num_seqs: 8
+  max_num_batched_tokens: 8192
+  enable_prefix_caching: true
+  enable_auto_tool_choice: true
+  tool_call_parser: qwen3_coder
+  reasoning_parser: qwen3
+  trust_remote_code: true
+  load_format: coldsnap
+  mm_encoder_tp_mode: data
+  attention_backend: FLASHINFER
+
+env:
+  CUTE_DSL_ARCH: sm_121a
+  VLLM_MARLIN_USE_ATOMIC_ADD: "1"
+  VLLM_MEMORY_PROFILE_INCLUDE_ATTN: "1"
+  VLLM_USE_AOT_COMPILE: "1"
+  VLLM_USE_V2_MODEL_RUNNER: "1"
+
+# Keep the qualified capacity and CUDA-graph controls explicit. Sparkrun adds
+# --nnodes, --node-rank, --master-addr/port, and --headless per placement.
+command: |
+  vllm serve Qwen/Qwen3.8-27B-FP8 \
+    --host {host} \
+    --port {port} \
+    --revision 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a \
+    --trust-remote-code \
+    --tensor-parallel-size {tensor_parallel} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --max-model-len {max_model_len} \
+    --max-num-seqs {max_num_seqs} \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --enable-prefix-caching \
+    --enable-auto-tool-choice \
+    --tool-call-parser {tool_call_parser} \
+    --reasoning-parser {reasoning_parser} \
+    --load-format {load_format} \
+    --mm-encoder-tp-mode {mm_encoder_tp_mode} \
+    --attention-backend {attention_backend} \
+    --enforce-eager
+
+coldsnap:
+  process:
+    async_graphs: false
+  weights:
+    mode: recovery
+    recovery:
+      loader_backend: torch
+  capsule:
+    repository: localhost:5500/sparksq/coldsnap-qwen38-27b-fp8-tp2-capsules
+    publish: true

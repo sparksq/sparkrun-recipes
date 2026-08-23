@@ -1,0 +1,5 @@
+registries:
+  - name: coldsnap
+    description: Qualified ColdSnap recipes for fast, recovery-aware inference startup
+    recipes: coldsnap-recipes
+    visible: false
