@@ -10,7 +10,7 @@ builder: coldsnap
 metadata:
   description: >-
     Qwen3.8-27B-FP8 TP2 with ColdSnap recovery-aware safetensors hydration,
-    semantic KV discard, eager execution, and portable per-rank OCI process
+    semantic KV discard, asynchronous CUDA graph capture, and portable per-rank OCI process
     capsules. Qualified on the g610 two-node DGX Spark cluster without a
     native ColdSnap weight blob.
   model_dtype: fp8
@@ -64,8 +64,7 @@ command: |
     --reasoning-parser {reasoning_parser} \
     --load-format {load_format} \
     --mm-encoder-tp-mode {mm_encoder_tp_mode} \
-    --attention-backend {attention_backend} \
-    --enforce-eager
+    --attention-backend {attention_backend}
 
 coldsnap:
   capsule:
