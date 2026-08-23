@@ -5,6 +5,7 @@ runtime: vllm-distributed
 container: localhost:5500/sparksq/coldsnap-vllm-runtime@sha256:7aaa8e69f26871eadd8308dda543f1145a5e660e11bafdf1c745782ca56e38bf
 min_nodes: 2
 max_nodes: 2
+builder: coldsnap
 
 metadata:
   description: >-
@@ -67,11 +68,5 @@ command: |
     --enforce-eager
 
 coldsnap:
-  process:
-    async_graphs: false
-  weights:
-    mode: recovery
-    recovery:
-      loader_backend: torch
   capsule:
     repository: docker.io/scitrera/coldsnap-qwen38-27b-fp8-tp2-capsules
