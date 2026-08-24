@@ -33,7 +33,7 @@ defaults:
   tool_call_parser: qwen3_coder
   reasoning_parser: qwen3
   trust_remote_code: true
-  load_format: coldsnap
+  load_format: instanttensor
   mm_encoder_tp_mode: data
   attention_backend: FLASHINFER
 
