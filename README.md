@@ -33,8 +33,12 @@ sparkrun run "$recipe" --cluster "$cluster"
 
 Capture always creates and activates local capsules first. After validating
 that capture, `publish` pushes the capsules to their configured
-`docker.io/scitrera/...` repositories and activates the portable,
-digest-pinned descriptor. `sparkrun run` selects ColdSnap restore
+`docker.io/scitrera/...` repositories, packages the small descriptor JSON in
+the same OCI repository, and activates the portable, digest-pinned descriptor.
+The command prints an immutable `oci://...@sha256:...` reference which may be
+added as `coldsnap.artifact.reference`; recipes without it use the local
+generation first and the repository's fingerprint-derived descriptor tag as a
+portable fallback. `sparkrun run` selects ColdSnap restore
 automatically; use `sparkrun coldsnap restore` for explicit overrides.
 
 ## Publishing
