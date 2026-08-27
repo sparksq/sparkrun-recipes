@@ -1,0 +1,70 @@
+recipe_version: "2"
+model: deepseek-ai/DeepSeek-V4-Flash-0731
+model_revision: 7872f01b1d1fe23eabc4c98b48bffcef5a386062
+runtime: vllm-distributed
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-b12x@sha256:c05e1d20aad3282e7f525a7c4e1b136daab4f87367ffe448ea5a7ecc134b0637
+min_nodes: 2
+max_nodes: 2
+
+metadata:
+  description: DeepSeek-V4-Flash-0731 TP2 n580 matched InstantTensor control.
+  model_dtype: fp8
+  kv_dtype: fp8
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 2
+  pipeline_parallel: 1
+  gpu_memory_utilization: 0.82
+  block_size: 256
+  max_model_len: auto
+  max_num_seqs: 8
+  max_num_batched_tokens: 8192
+  max_cudagraph_capture_size: 64
+  num_speculative_tokens: 5
+
+env:
+  B12X_MLA_SM120_UNIFIED: "1"
+  B12X_MOE_FORCE_A8: "1"
+  CUTE_DSL_ARCH: sm_121a
+  VLLM_MEMORY_PROFILE_INCLUDE_ATTN: "1"
+  VLLM_USE_AOT_COMPILE: "1"
+  VLLM_USE_B12X_FP8_GEMM: "1"
+  VLLM_USE_B12X_MHC: "1"
+  VLLM_USE_B12X_MOE: "1"
+  VLLM_USE_B12X_SPARSE_INDEXER: "1"
+  VLLM_USE_B12X_WO_PROJECTION: "1"
+  VLLM_USE_BREAKABLE_CUDAGRAPH: "0"
+  VLLM_USE_FLASHINFER_SAMPLER: "1"
+  VLLM_USE_MEGA_AOT_ARTIFACT: "-1"
+  VLLM_USE_V2_MODEL_RUNNER: "1"
+
+command: |
+  vllm serve deepseek-ai/DeepSeek-V4-Flash-0731 \
+    --host {host} \
+    --port {port} \
+    --revision 7872f01b1d1fe23eabc4c98b48bffcef5a386062 \
+    --trust-remote-code \
+    --tensor-parallel-size {tensor_parallel} \
+    --kv-cache-dtype fp8 \
+    --block-size {block_size} \
+    --max-model-len {max_model_len} \
+    --max-num-seqs {max_num_seqs} \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --enable-prefix-caching \
+    --tokenizer-mode deepseek_v4 \
+    --tool-call-parser deepseek_v4 \
+    --enable-auto-tool-choice \
+    --reasoning-parser deepseek_v4 \
+    --reasoning-config '{"reasoning_parser":"deepseek_v4","reasoning_start_str":"","reasoning_end_str":""}' \
+    --default-chat-template-kwargs.thinking=true \
+    --default-chat-template-kwargs.reasoning_effort=high \
+    --load-format instanttensor \
+    --moe-backend b12x \
+    --linear-backend b12x \
+    --attention-backend B12X_MLA_SPARSE \
+    --max-cudagraph-capture-size {max_cudagraph_capture_size} \
+    --compilation-config '{"cudagraph_mode":"FULL_AND_PIECEWISE","custom_ops":["all"],"cudagraph_capture_sizes":[8,16,24,32,40,48,56,64]}' \
+    --speculative-config '{"method":"dspark","num_speculative_tokens":{num_speculative_tokens},"draft_sample_method":"probabilistic","attention_backend":"B12X_MLA_SPARSE"}'

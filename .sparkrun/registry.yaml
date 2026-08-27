@@ -3,3 +3,7 @@ registries:
     description: Qualified ColdSnap recipes for fast, recovery-aware inference startup
     recipes: coldsnap-recipes
     visible: false
+  - name: coldsnap-vanilla
+    description: Vanilla controls matched to the qualified ColdSnap recipes
+    recipes: vanilla-recipes
+    visible: false
