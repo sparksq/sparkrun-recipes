@@ -78,4 +78,4 @@ command: |
 
 coldsnap:
   capsule:
-    repository: docker.io/scitrera/coldsnap-ds4f-0731-tp2-capsules
+    repository: docker.io/scitrera/coldsnap-ds4f-0731-tp2-vllm-capsules

@@ -68,4 +68,4 @@ command: |
 
 coldsnap:
   capsule:
-    repository: docker.io/scitrera/coldsnap-qwen38-27b-fp8-tp2-capsules
+    repository: docker.io/scitrera/coldsnap-qwen38-27b-fp8-tp2-vllm-capsules
