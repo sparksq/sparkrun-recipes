@@ -1,0 +1,52 @@
+recipe_version: "2"
+model: Qwen/Qwen3.8-27B-FP8
+model_revision: 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a
+runtime: sglang
+container: docker.io/lmsysorg/sglang@sha256:febfb971c7352570fc445c466ebd6ffc9d896024958e544a60f2137fd85856b1
+min_nodes: 2
+max_nodes: 2
+builder: coldsnap
+
+metadata:
+  description: Qwen3.8-27B-FP8 SGLang TP2 with portable ColdSnap process capsules.
+  model_params: 27B
+  quantization: fp8
+
+executor_config:
+  cap_add:
+    - SYS_PTRACE
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 2
+  gpu_memory_utilization: 0.8
+  max_num_batched_tokens: 8192
+  max_num_seqs: 8
+  cuda_graph_max_bs: 8
+  kv_cache_dtype: fp8_e4m3
+  attention_backend: flashinfer
+  tool_call_parser: qwen3_coder
+  reasoning_parser: qwen3
+
+command: |
+  sglang serve \
+    --model-path {model} \
+    --revision 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a \
+    --host {host} \
+    --port {port} \
+    --tp {tensor_parallel} \
+    --mem-fraction-static {gpu_memory_utilization} \
+    --chunked-prefill-size {max_num_batched_tokens} \
+    --max-running-requests {max_num_seqs} \
+    --cuda-graph-max-bs-decode {cuda_graph_max_bs} \
+    --attention-backend {attention_backend} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --reasoning-parser {reasoning_parser} \
+    --tool-call-parser {tool_call_parser} \
+    --disable-prefill-cuda-graph \
+    --trust-remote-code
+
+coldsnap:
+  capsule:
+    repository: docker.io/scitrera/coldsnap-qwen38-27b-fp8-sglang-tp2-capsules

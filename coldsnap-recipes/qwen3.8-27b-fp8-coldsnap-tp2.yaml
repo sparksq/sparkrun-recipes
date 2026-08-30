@@ -2,7 +2,7 @@ recipe_version: "2"
 model: Qwen/Qwen3.8-27B-FP8
 model_revision: 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a
 runtime: vllm-distributed
-container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-b12x@sha256:c05e1d20aad3282e7f525a7c4e1b136daab4f87367ffe448ea5a7ecc134b0637
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-b12x@sha256:af9629c5bc9f5edc1b478a996cf4aa4304311524f31e61ab66e59fce8ff8fd02
 min_nodes: 2
 max_nodes: 2
 builder: coldsnap
@@ -23,9 +23,9 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 2
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.2
+  gpu_memory_utilization: 0.8
   kv_cache_dtype: fp8
-  max_model_len: 32768
+  max_model_len: auto
   max_num_seqs: 8
   max_num_batched_tokens: 8192
   enable_prefix_caching: true

@@ -1,0 +1,68 @@
+recipe_version: "2"
+model: RadixArk/Qwen3.8-27B-NVFP4
+model_revision: 319f741cce68d7914884900c138a1fbb70a42f30
+runtime: sglang
+container: docker.io/lmsysorg/sglang@sha256:febfb971c7352570fc445c466ebd6ffc9d896024958e544a60f2137fd85856b1
+min_nodes: 2
+max_nodes: 2
+
+metadata:
+  description: Qwen3.8-27B-NVFP4 — NVFP4 format w/ DSpark speculative decoding (SGLang)
+  model_params: 27B
+  quantization: nvfp4
+
+executor_config:
+  cap_add:
+    - SYS_PTRACE
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 2
+  gpu_memory_utilization: 0.8
+  max_model_len: 262144
+  max_num_batched_tokens: 8192
+  max_num_seqs: 16
+  cuda_graph_max_bs: 16
+  torch_compile_max_bs: 16
+  num_continuous_decode_steps: 2
+  mm_feature_transport: cpu
+  kv_cache_dtype: fp8_e4m3
+  attention_backend: flashinfer
+  tool_call_parser: qwen3_coder
+  reasoning_parser: qwen3
+  speculative_algorithm: DSPARK
+  speculative_draft_model_path: RadixArk/Qwen3.8-27B-DSpark
+  speculative_draft_model_revision: b3c9910194dc7ae53fea3d95a1959b654f495416
+  speculative_dspark_block_size: 7
+  mamba_ssm_dtype: bfloat16
+  mamba_full_memory_ratio: 0.67
+
+command: |
+  sglang serve \
+    --model-path {model} \
+    --revision 319f741cce68d7914884900c138a1fbb70a42f30 \
+    --host {host} \
+    --port {port} \
+    --tp {tensor_parallel} \
+    --mem-fraction-static {gpu_memory_utilization} \
+    --context-length {max_model_len} \
+    --chunked-prefill-size {max_num_batched_tokens} \
+    --max-running-requests {max_num_seqs} \
+    --cuda-graph-max-bs-decode {cuda_graph_max_bs} \
+    --enable-torch-compile \
+    --torch-compile-max-bs {torch_compile_max_bs} \
+    --num-continuous-decode-steps {num_continuous_decode_steps} \
+    --attention-backend {attention_backend} \
+    --mm-feature-transport {mm_feature_transport} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --reasoning-parser {reasoning_parser} \
+    --tool-call-parser {tool_call_parser} \
+    --speculative-algorithm {speculative_algorithm} \
+    --speculative-draft-model-path {speculative_draft_model_path} \
+    --speculative-draft-model-revision {speculative_draft_model_revision} \
+    --speculative-dspark-block-size {speculative_dspark_block_size} \
+    --mamba-ssm-dtype {mamba_ssm_dtype} \
+    --mamba-full-memory-ratio {mamba_full_memory_ratio} \
+    --disable-prefill-cuda-graph \
+    --trust-remote-code
