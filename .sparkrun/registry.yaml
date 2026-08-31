@@ -7,3 +7,4 @@ registries:
     description: Vanilla controls matched to the qualified ColdSnap recipes
     recipes: vanilla-recipes
     visible: false
+    enabled: false
