@@ -70,4 +70,4 @@ command: |
 
 coldsnap:
   capsule:
-    repository: docker.io/scitrera/coldsnap-qwen38-27b-nvfp4-dspark-tp2-sglang-capsules
+    repository: docker.io/scitrera/coldsnap-qwen38-27b-capsules
